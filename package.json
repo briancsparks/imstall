@@ -1,6 +1,6 @@
 {
   "name": "imstall",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Use 'npx imstall ...' as a package installer for more complex installations.",
   "main": "index.js",
   "bin": {

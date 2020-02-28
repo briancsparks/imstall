@@ -5,6 +5,10 @@ const os                  = require('os');
 const path                = require('path');
 const { spawn, execSync } = require('child_process');
 
+var os_distro       = 'mac';
+var os_release      = '10.14.5';
+var os_codename     = 'Mojave';
+
 main();
 
 
@@ -20,12 +24,15 @@ function main() {
   var imstallName     = args.shift();
   var commandName     = args.shift();
 
-  // Get the distro
-  var distro          = 'mac';
+  // Get the os_distro
   if (os.platform() === 'linux') {
-    distro            = ''+ execSync('lsb_release -is');
+    os_distro         = ''+ execSync('lsb_release -is');
+    os_release        = ''+ execSync('lsb_release -ir');
+    os_codename       = ''+ execSync('lsb_release -ic');
   }
-  distro = distro.trim();
+  os_distro     = os_distro.trim();
+  os_release    = os_release.trim();
+  os_codename   = os_codename.trim();
 
   // Is this an apt-get install? ------------------------------------------------------------------
   if (commandName === 'agu') {
@@ -46,27 +53,11 @@ function main() {
   }
 
   // A general package-ish ------------------------------------------------------------------------
-  var command = path.join(__dirname, 'lib', distro, commandName);
+  var command = path.join(__dirname, 'lib', os_distro, commandName);
 
   var success = false;
   if (fs.existsSync(command)) {
     //console.log(`clog ${command}`, args);
-
-//    const proc = spawn(command, args);
-//
-//    proc.stdout.on('data', (data) => {
-//      //console.log(`stdout: ${data}`);
-//      console.log(''+ data);
-//    });
-//
-//    proc.stderr.on('data', (data) => {
-//      //console.error(`stderr: ${data}`);
-//      console.error(''+ data);
-//    });
-//
-//    proc.on('close', (code) => {
-//      console.log(`imstall ${commandName} exited with code ${code}`);
-//    });
 
     return spawnIt(commandName, command, args, function(code) {
       console.log(`imstall |${commandName}| exited with code ${code}`);
@@ -84,7 +75,10 @@ function main() {
  *  spawn the command.
  */
 function spawnIt(commandName, command, args, callback) {
-  const proc = spawn(command, args);
+
+  var env     = Object.assign({}, process.env, {OS_DISTRO: os_distro, OS_RELEASE: os_release, OS_CODENAME: os_codename});
+
+  const proc  = spawn(command, args, {env});
 
   proc.stdout.on('data', (data) => {
     //console.log(`stdout: ${data}`);
