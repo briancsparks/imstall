@@ -2,5 +2,9 @@
 
 echo Installing vim8bcs
 
+scripts_dir="$(dirname $0)"
+
+${scripts_dir}/vim8
+${scripts_dir}/vimbcs
 
 # vim: ft=bash:
