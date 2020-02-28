@@ -13,6 +13,8 @@ pathogen()
   fi
 }
 
+scripts_dir="$(dirname $0)"
+
 # VIM setup
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 
@@ -38,4 +40,5 @@ if [[ -d ~/.vim/bundle/vim-javascript/indent ]]; then
 fi
 
 
+cp ${scripts_dir}/../files/vimbcs/vimrc ${HOME}/.vimrc
 
