@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+echo Installing vim8bcs
+
+
