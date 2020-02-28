@@ -35,10 +35,10 @@ function main() {
   os_codename   = os_codename.trim();
 
   // Is this an apt-get install? ------------------------------------------------------------------
-  if (commandName === 'agu') {
+  if (commandName === 'agui') {
     var command = path.join(__dirname, 'lib', commandName);
     return spawnIt(commandName, command, args, function(code) {
-      console.log(`imstall |agu ${args.join(' ')}| exited with code ${code}`);
+      console.log(`imstall |agui ${args.join(' ')}| exited with code ${code}`);
       return;
     });
   }
