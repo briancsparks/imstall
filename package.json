@@ -1,0 +1,22 @@
+{
+  "name": "imstall",
+  "version": "1.0.0",
+  "description": "Use 'npx imstall ...' as a package installer for more complex installations.",
+  "main": "index.js",
+  "bin": {
+    "imstall": "imstall.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/briancsparks/imstall.git"
+  },
+  "author": "Brian C Sparks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/briancsparks/imstall/issues"
+  },
+  "homepage": "https://github.com/briancsparks/imstall#readme"
+}
