@@ -10,11 +10,16 @@ execute pathogen#infect()
 
 :set nocompatible
 :set hidden
+:set encoding=utf-8
 :set showcmd
 :set nu
 :syntax on
 :set ruler
 :set clipboard=unnamed
+
+"" Suggested by Ctrl+Space v5 -- NO WAY
+":set showtabline=0
+
 ":set autoread
 highlight StatusLine ctermfg=blue ctermbg=yellow
 
@@ -143,10 +148,21 @@ autocmd User Rails Rnavcommand jspec       spec/javascripts                     
 "
 " ------------------------------------- vim-ctrlspace  --------------------------------------------------
 "
-hi CtrlSpaceSelected term=reverse ctermfg=187  ctermbg=23  cterm=bold
-hi CtrlSpaceNormal   term=NONE    ctermfg=244  ctermbg=232 cterm=NONE
-hi CtrlSpaceSearch   ctermfg=220  ctermbg=NONE cterm=bold
-hi CtrlSpaceStatus   ctermfg=230  ctermbg=234  cterm=NONE
+
+"" These are previous
+"hi CtrlSpaceSelected term=reverse ctermfg=187  ctermbg=23  cterm=bold
+"hi CtrlSpaceNormal   term=NONE    ctermfg=244  ctermbg=232 cterm=NONE
+"hi CtrlSpaceSearch   ctermfg=220  ctermbg=NONE cterm=bold
+"hi CtrlSpaceStatus   ctermfg=230  ctermbg=234  cterm=NONE
+
+" These are new
+hi link CtrlSpaceNormal   PMenu
+hi link CtrlSpaceSelected PMenuSel
+"hi link CtrlSpaceSearch   Search
+hi link CtrlSpaceStatus   StatusLine
+
+" Or, this one might be needed. See: https://github.com/vim-ctrlspace/vim-ctrlspace
+hi link CtrlSpaceSearch IncSearch
 
 let g:ctrlspace_load_last_workspace_on_start=1
 let g:ctrlspace_save_workspace_on_exit=1
@@ -158,6 +174,10 @@ let g:ctrlspace_max_search_results=0
 " vim-ctrlspace v5
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
+
+let g:CtrlSpaceDefaultMappingKey = "<C-space> "
+
+let g:CtrlSpaceSearchTiming = 500
 
 if executable("ag")
   let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
