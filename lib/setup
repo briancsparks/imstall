@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+echo "all" $@
+
+echo npx -p "git+ssh://git@github.com/${1}/setup" -c imstall
 npx -p "git+ssh://git@github.com/${1}/setup" -c imstall
 
 
