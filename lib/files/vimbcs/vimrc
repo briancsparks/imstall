@@ -61,20 +61,21 @@ autocmd ColorScheme * highlight ErrorWhitespace ctermbg=red guibg=red
 "
 
 " Next / Previous tab
-:map <F7> :tabp<CR>
-:map <F8> :tabn<CR>
+:map <F7> :tabp<CR>:filetype detect<CR>
+:map <F8> :tabn<CR>:filetype detect<CR>
 
 " Open new tab
 :map <C-t> <esc>:tabe<CR>,t
 
-" Switch to syntastic style
-" " Next and previous error (quickfix)
-" :map <C-n> :cn<CR>
-" :map <C-p> :cp<CR>
+:nnoremap <F5> :filetype detect<CR>
 
-" Next and previous error (Syntastic Location List)
-:map <C-n> :lnext<CR>
-:map <C-p> :lprevious<CR>
+" Switch to syntastic style Next and previous error (quickfix)
+:map <C-n> :cn<CR>
+:map <C-p> :cp<CR>
+
+"" Next and previous error (Syntastic Location List)
+":map <C-n> :lnext<CR>
+":map <C-p> :lprevious<CR>
 
 " Open file from the same dir
 :map <Leader>e :e <C-R>=expand("%:p:h") . '/'<CR>
@@ -85,6 +86,7 @@ nmap <silent> ,. :nohlsearch<CR>
 :color desert
 " :color delek
 
+
 " Support for ag
 let g:ag_prg="/usr/bin/ag --vimgrep"
 
@@ -93,6 +95,7 @@ let g:ag_prg="/usr/bin/ag --vimgrep"
 
 " Support for ack
 let g:ackprg="/usr/local/bin/ack -H --nocolor --column"
+
 
 "
 " ------------------------------------- vim-javascript  --------------------------------------------------
