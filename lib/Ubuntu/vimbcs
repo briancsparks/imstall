@@ -33,6 +33,13 @@ pathogen jneen ragel.vim
 pathogen chr4 nginx.vim
 pathogen kkoomen vim-doge
 
+# Support for ag
+pathogen rking ag.vim
+pathogen Chun-Yang vim-action-ag
+
+# Support for ack
+pathogen mileszs ack.vim
+
 # vim-javascript and vim-jsx do horrible indentation
 # (***)
 if [[ -d ~/.vim/bundle/vim-javascript/indent ]]; then
