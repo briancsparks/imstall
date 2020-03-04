@@ -27,12 +27,13 @@ function main() {
   // Get the os_distro
   if (os.platform() === 'linux') {
     os_distro         = ''+ execSync('lsb_release -is');
-    os_release        = ''+ execSync('lsb_release -ir');
-    os_codename       = ''+ execSync('lsb_release -ic');
+    os_release        = ''+ execSync('lsb_release -rs');
+    os_codename       = ''+ execSync('lsb_release -cs');
   }
   os_distro     = os_distro.trim();
   os_release    = os_release.trim();
   os_codename   = os_codename.trim();
+
 
   // Is this an apt-get install? ------------------------------------------------------------------
   if (commandName === 'agui') {
@@ -43,6 +44,17 @@ function main() {
     });
   }
 
+
+  // Is this a setup? -----------------------------------------------------------------------------
+  if (commandName === 'setup') {
+    var command = path.join(__dirname, 'lib', commandName);
+    return spawnIt(commandName, command, args, function(code) {
+      console.log(`imstall |setup ${args.join(' ')}| exited with code ${code}`);
+      return;
+    });
+  }
+
+
   // Is this an echo? -----------------------------------------------------------------------------
   if (commandName === 'echo') {
     var command = path.join(__dirname, 'lib', commandName);
@@ -52,21 +64,31 @@ function main() {
     });
   }
 
-  // A general package-ish ------------------------------------------------------------------------
-  var command = path.join(__dirname, 'lib', os_distro, commandName);
 
-  var success = false;
+
+  // A general package-ish ------------------------------------------------------------------------
+  var command = path.join(__dirname, 'lib', os_distro, os_release, commandName);
+
   if (fs.existsSync(command)) {
     //console.log(`clog ${command}`, args);
 
     return spawnIt(commandName, command, args, function(code) {
       console.log(`imstall |${commandName}| exited with code ${code}`);
     });
-
-  } else {
-    console.error(`No recipe for "${command}"`);
-    //console.log(`Cannot find command: ${command}`);
   }
+
+  /* otherwise -- try shorter name */
+  var command = path.join(__dirname, 'lib', os_distro, commandName);
+  if (fs.existsSync(command)) {
+    //console.log(`clog ${command}`, args);
+
+    return spawnIt(commandName, command, args, function(code) {
+      console.log(`imstall |${commandName}| exited with code ${code}`);
+    });
+  }
+
+  /* otherwise -- not found */
+  console.error(`No recipe for "${command}"`);
 }
 
 

@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+npx -p "git+ssh://git@github.com/${1}/setup" -c imstall
+
+
