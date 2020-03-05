@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+docker network create localnet
+docker container run --network localnet --name mongo -d -p 27017:27017 mongo:4.2-bionic
+
+# You can start second container to attach and query it
+# docker container run -it --network localnet --rm mongo    mongo --host mongo test
+

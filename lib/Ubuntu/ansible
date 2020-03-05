@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+echo Installing Ansible
+
+sudo apt-get install -y --no-install-recommends software-properties-common python-minimal virtualenv python-dev build-essential python-pip
+pip install ansible
+
+# For ec2.py
+pip install boto boto3
+
+
+# Alternatively, you can use a virtual env. Do these lines instead of the `pip install ansible` above
+#echo mkdir -p ansible
+#echo cd ansible
+#echo virtualenv venv27
+#echo source venv27/bin/activate
+#echo pip install ansible
+

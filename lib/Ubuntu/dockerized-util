@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+# Create a docker bridge-type network, in case we need to talk to one or look at volumes
+docker network create localnet
+
+# Run each on that network, and expose their normal ports on the instances interface
+docker container run --network localnet --name localmongodb       -d -p 27017:27017   mongo:4.2-bionic
+docker container run --network localnet --name localmemcached     -d -p 11211:11211   memcached:latest
+docker container run --network localnet --name localredisserver   -d -p 6379:6379     redis:5-buster
+
+
