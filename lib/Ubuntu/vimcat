@@ -1,0 +1,25 @@
+#!/bin/bash -e
+
+echo Installing vimcat
+
+# pandoc and doctoc are optional.  Install them unless the user says no
+if [[ $1 != "--slim" ]]; then
+  sudo apt-get install -y pandoc
+
+  if hash npm; then
+    sudo npm install --global doctoc
+  fi
+fi
+
+# clone; make install
+mkdir -p "${HOME}/zz_packages/imstall_$$" && cd $_
+git clone git://github.com/rkitover/vimpager
+cd vimpager
+sudo make install-deb
+
+# Clean up
+cd "${HOME}/zz_packages"
+test -d "imstall_$$" && rm -rf "imstall_$$"
+
+# vim: ft=bash:
+
