@@ -1,0 +1,16 @@
+#!/bin/bash -e
+
+script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
+
+if which aws > /dev/null; then
+  sudo -H pip uninstall -y awscli
+fi
+
+
+cd
+cd zz_packages
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
