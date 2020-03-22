@@ -36,7 +36,7 @@ function main() {
 
 
   // Is this an apt-get install? ------------------------------------------------------------------
-  if (commandName === 'agui') {
+  if (commandName === 'agui' || commandName === 'agi') {
     var command = path.join(__dirname, 'lib', commandName);
     return spawnIt(commandName, command, args, function(code) {
       console.log(`imstall |agui ${args.join(' ')}| exited with code ${code}`);
