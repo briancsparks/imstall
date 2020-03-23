@@ -30,9 +30,9 @@ function main() {
     os_release        = ''+ execSync('lsb_release -rs');
     os_codename       = ''+ execSync('lsb_release -cs');
   }
-  os_distro     = os_distro.trim();
-  os_release    = os_release.trim();
-  os_codename   = os_codename.trim();
+  os_distro     = os_distro.toLowerCase().trim();
+  os_release    = os_release.toLowerCase().trim();
+  os_codename   = os_codename.toLowerCase().trim();
 
 
   // Is this an apt-get install? ------------------------------------------------------------------
@@ -67,6 +67,9 @@ function main() {
 
 
   // A general package-ish ------------------------------------------------------------------------
+
+  // Look at .../imstall/lib/ubuntu/16.04/__commandName__
+
   var command = path.join(__dirname, 'lib', os_distro, os_release, commandName);
 
   if (fs.existsSync(command)) {
@@ -78,6 +81,9 @@ function main() {
   }
 
   /* otherwise -- try shorter name */
+
+  // Look at .../imstall/lib/ubuntu/__commandName__
+
   var command = path.join(__dirname, 'lib', os_distro, commandName);
   if (fs.existsSync(command)) {
     //console.log(`clog ${command}`, args);
