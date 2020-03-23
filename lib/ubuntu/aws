@@ -8,6 +8,7 @@ fi
 
 
 cd
+mkdir -p zz_packages
 cd zz_packages
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
