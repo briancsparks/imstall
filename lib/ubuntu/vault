@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
+
+errcho() { echo "$@" 1>&2; }
+die() { errcho "$@"; exit 1; }
+
+CACHED_S3="s3://cdr0/files/55/vault_1.3.4_linux_amd64.zip"
+CACHED_URL="https://cdr0.s3.amazonaws.com/files/55/vault_1.3.4_linux_amd64.zip"
+
+# TODO: Give option to dl from hashicorp
+
+cd
+mkdir -p zz_packages && cd $_
+
+curl -sSL "$CACHED_URL" -o vault.zip
+unzip vault.zip
+
+# TODO: allow user to pick install
+sudo mv vault /usr/local/bin/
+
+cd
+rm -f zz_packages/vault.zip
+
