@@ -12,9 +12,10 @@ their code. Usually, there's only a readme.
 So, I decided to build scripts for the ones I've had to install manually, and
 here they are. These have been used on Ubuntu 16.04 only. If something fails on
 it, leave me an issue. If it fails on 18.04 or 20.04, leave an issue, but it might
-not get fixed right away. PRs are appreciated. PRs for non-Ubuntu are doubly appreciated.
+not get fixed right away. PRs are appreciated. PRs for non-Ubuntu are doubly
+appreciated. (See below.)
 
-# Anaconda
+### Anaconda
 
 ```sh
 npx imstall anaconda
@@ -22,11 +23,11 @@ npx imstall anaconda
 
 Installs the data-science-centric Python distro.
 
-# Android-build-tools
+### Android-build-tools
 
 TBD
 
-# Ansible
+### Ansible
 
 ```sh
 npx imstall ansible
@@ -34,7 +35,7 @@ npx imstall ansible
 
 Installs Ansible and adds boto and boto3.
 
-# AWS2
+### AWS2
 
 ```sh
 npx imstall aws
@@ -42,7 +43,7 @@ npx imstall aws
 
 Installs the AWS command-line tools, version 2.
 
-# etcd
+### etcd
 
 ```sh
 npx imstall etcd
@@ -52,7 +53,7 @@ Installs command-line client for etcd.
 
 * This is not the etcd engine / server, it is just the CLI client.
 
-# fzf
+### fzf
 
 ```sh
 npx imstall fzf
@@ -60,7 +61,7 @@ npx imstall fzf
 
 Installs the command-line fuzzy-finder.
 
-# GO
+### GO
 
 ```sh
 npx imstall go
@@ -68,7 +69,7 @@ npx imstall go
 
 Installs the programming language GO.
 
-# Node.js
+### Node.js
 
 ```sh
 npx imstall node12
@@ -76,7 +77,7 @@ npx imstall node12
 
 Installs Node.js, version 12.
 
-# Redis
+### Redis
 
 ```sh
 npx imstall redis
@@ -84,7 +85,7 @@ npx imstall redis
 
 Installs redis-server, fixes redis.conf to bind to all ifaces, and (re)starts the service.
 
-# Hashicorp Vault
+### Hashicorp Vault
 
 ```sh
 npx imstall vault
@@ -96,7 +97,7 @@ TODO:
 
 * Download latest from Hashicorp, and use that, instead.
 
-# VIM 8
+### VIM 8
 
 ```sh
 npx imstall vim8
@@ -104,11 +105,23 @@ npx imstall vim8
 
 Installs VIM 8+ from `ppa:jonathonf`.
 
-# vimcat
+### vimcat
 
 ```sh
 npx imstall vimcat
 ```
 
 Installs `vimcat` (and `vimpager`) from github.com/rkitover/vimpager.
+
+## Adding Imstallers
+
+When the user invokes: `npx imstall xyz`, the tool looks in its `.../lib/ubuntu/16.04/`
+directory for an executable called `xyz`. If nothing is there, it looks in
+`.../lib/ubuntu/` for `xyz`. If an `xyz` is found, it is executed.
+
+* `ubuntu` was gotten from `lsb_release -is`.
+* `16.04` was gotten from `lsb_release -rs`.
+
+so, put a script at `.../lib/$(lsb_release -is)/$(lsb_release -rs)/xyz` for your favorite
+software and send me a pull request.
 
