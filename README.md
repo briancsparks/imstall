@@ -10,7 +10,9 @@ the newest, most exciting software that hasn't yet put time into package-ifying
 their code. Usually, there's only a readme.
 
 So, I decided to build scripts for the ones I've had to install manually, and
-here they are.
+here they are. These have been used on Ubuntu 16.04 only. If something fails on
+it, leave me an issue. If it fails on 18.04 or 20.04, leave an issue, but it might
+not get fixed right away. PRs are appreciated. PRs for non-Ubuntu are doubly appreciated.
 
 # Anaconda
 
