@@ -30,7 +30,7 @@ TBD
 npx imstall ansible
 ```
 
-Installs Ansible, plus boto and boto3
+Installs Ansible and adds boto and boto3.
 
 # AWS2
 
@@ -48,6 +48,8 @@ npx imstall etcd
 
 Installs command-line client for etcd.
 
+* This is not the etcd engine / server, it is just the CLI client.
+
 # fzf
 
 ```sh
@@ -63,8 +65,6 @@ npx imstall go
 ```
 
 Installs the programming language GO.
-
-
 
 # Node.js
 
@@ -92,7 +92,7 @@ Installs `vault_1.3.4_linux_amd64.zip` that I have on S3.
 
 TODO:
 
-* Download latest from Hashicorp.
+* Download latest from Hashicorp, and use that, instead.
 
 # VIM 8
 
@@ -108,5 +108,5 @@ Installs VIM 8+ from `ppa:jonathonf`.
 npx imstall vimcat
 ```
 
-Installs rkitover/vimcat.
+Installs `vimcat` (and `vimpager`) from github.com/rkitover/vimpager.
 
