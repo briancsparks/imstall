@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
+
+errcho() { echo "$@" 1>&2; }
+die() { errcho "$@"; exit 1; }
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+sudo add-apt-repository -y ppa:rmescandon/yq
+sudo apt update
+sudo apt install yq -y
+
