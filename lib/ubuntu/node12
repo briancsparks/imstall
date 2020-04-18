@@ -6,9 +6,9 @@ echo Installing Node.js v12
 curl -L https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
 
 # Cloud-Config
-sudo echo "deb https://deb.nodesource.com/node_12.x ${OS_CODENAME} main" > /etc/apt/sources.list.d
+sudo echo "deb https://deb.nodesource.com/node_12.x ${OS_CODENAME} main" | sudo tee -a /etc/apt/sources.list.d/node.list
 
 sudo apt-get update
-sudo apt-get install -y nodejs
+sudo apt-get install -y --no-install-recommends nodejs
 
 # vim: ft=bash:

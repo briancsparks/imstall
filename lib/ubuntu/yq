@@ -8,5 +8,5 @@ die() { errcho "$@"; exit 1; }
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
 sudo add-apt-repository -y ppa:rmescandon/yq
 sudo apt update
-sudo apt install yq -y
+sudo apt install -y --no-install-recommends yq
 
