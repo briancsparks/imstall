@@ -21,5 +21,4 @@ sudo make install-deb
 cd "${HOME}/zz_packages"
 test -d "imstall_$$" && rm -rf "imstall_$$"
 
-# vim: ft=bash:
 
