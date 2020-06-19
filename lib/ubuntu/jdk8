@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
+
+errcho() { echo "$@" 1>&2; }
+die() { errcho "$@"; exit 1; }
+
+sudo apt-get update
+sudo apt-get install -y openjdk-8-jdk
+
+echo "Other things you might do:"
+echo "sudo update-alternatives --config java"
+echo "sudo update-alternatives --set java /location/of/java"
+echo "set JAVA_HOME from output of update-alternatives"
