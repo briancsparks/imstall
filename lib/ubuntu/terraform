@@ -5,26 +5,23 @@ script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
 errcho() { echo "$@" 1>&2; }
 die() { errcho "$@"; exit 1; }
 
-
-
-URL="https://releases.hashicorp.com/vault/1.4.2/vault_1.4.2_linux_amd64.zip"
-PATHNAME="/usr/local/bin/vault"
+URL="https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip"
+PATHNAME="/usr/local/bin/terraform"
 
 [[ -f ${PATHNAME} ]] && die "already exists, stopping."
 
 cd
 mkdir -p zz_packages && cd $_
 
-curl -sSL "$URL" -o vault.zip
-unzip vault.zip
+curl -sSL "$URL" -o terraform.zip
+unzip terraform.zip
 
-sudo mv vault "${PATHNAME}"
+sudo mv terraform "${PATHNAME}"
 sudo chown root:root "${PATHNAME}"
 sudo chmod +x "${PATHNAME}"
 
 cd
-rm -f zz_packages/vault.zip
-
+rm -f zz_packages/terraform.zip
 
 
 

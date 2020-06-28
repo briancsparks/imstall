@@ -123,3 +123,43 @@ function spawnIt(commandName, command, args, callback) {
   });
 }
 
+function lsb_release(opts) {
+  if (os.platform() === 'linux') {
+    return ''+ execSync(`lsb_release ${opts}`);
+  } if (os.platform() === 'darwin') {
+    if (opts.indexOf('i') !== -1) {
+      return clean(''+ execSync(`sw_vers -productName`));
+    }
+
+    let vers = ''+ execSync(`sw_vers -productVersion`);
+    if (opts.indexOf('r') !== -1) {
+      return clean(vers);
+    }
+
+    if (opts.indexOf('c') !== -1) {
+      if (vers.startsWith('10.15')) { return 'Catalina'; }
+      if (vers.startsWith('10.14')) { return 'Mojave'; }
+      if (vers.startsWith('10.13')) { return 'High Sierra'; }
+      if (vers.startsWith('10.12')) { return 'Sierra'; }
+      if (vers.startsWith('10.11')) { return 'El Capitan'; }
+      if (vers.startsWith('10.10')) { return 'Yosemite'; }
+      if (vers.startsWith('10.9'))  { return 'Mavericks'; }
+      if (vers.startsWith('10.8'))  { return 'Mountain Lion'; }
+      if (vers.startsWith('10.7'))  { return 'Lion'; }
+      if (vers.startsWith('10.6'))  { return 'Snow Leopard'; }
+      if (vers.startsWith('10.5'))  { return 'Leopard'; }
+      if (vers.startsWith('10.4'))  { return 'Tiger'; }
+      if (vers.startsWith('10.3'))  { return 'Panther'; }
+      if (vers.startsWith('10.2'))  { return 'Jaguar'; }
+      if (vers.startsWith('10.1'))  { return 'Puma'; }
+      if (vers.startsWith('10.0.')) { return 'Cheetah'; }
+
+      return `${lsb_release('-is')} ${vers}`;
+    }
+  }
+
+  function clean(str) {
+    return str.split('\n')[0];
+  }
+}
+
