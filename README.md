@@ -15,6 +15,14 @@ it, leave me an issue. If it fails on 18.04 or 20.04, leave an issue, but it mig
 not get fixed right away. PRs are appreciated. PRs for non-Ubuntu are doubly
 appreciated. (See below.)
 
+## Note
+
+Items might also be here if, after installing with a package manager, it always
+needs configuration of one sort or another. In this case, imstalling it is really
+for configuring it. Any configuring will be done with a mind for getting it up
+and running and usable. (Configuring it for development.) Therefore, the configuration
+will probably not be optimized or secured.
+
 ### Anaconda
 
 ```sh
