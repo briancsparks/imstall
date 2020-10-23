@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+errcho() { echo "$@" 1>&2; }
+die() { errcho "$@"; exit 1; }
+
+[[ -z $IMSTALL_GITHUB_USERNAME ]] && IMSTALL_GITHUB_USERNAME="$1"
+
+[[ -z $IMSTALL_GITHUB_USERNAME ]] && die "Usage: npx setup github-username"
+
 npx -p "git+ssh://git@github.com/${1}/setup" -c imstall
 
 

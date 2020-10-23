@@ -1,10 +1,23 @@
 #!/bin/bash -e
 
-echo Installing vimcat
+# echo Installing vimcat
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# If we already have it, we done
+hash vimcat 2> /dev/null && exit 0
+
+# Source utils
+. "${script_dir}/common/file-utils"
+
+# We need build tools
+if ! hash make 2> /dev/null; then
+  apt_get_install build-essential
+fi
 
 # pandoc and doctoc are optional.  Install them unless the user says no
 if [[ $1 != "--slim" ]]; then
-  sudo apt-get install -y pandoc
+  apt_get_install pandoc
 
   if hash npm; then
     sudo npm install --global doctoc
@@ -20,5 +33,5 @@ sudo make install-deb
 # Clean up
 cd "${HOME}/zz_packages"
 test -d "imstall_$$" && rm -rf "imstall_$$"
-
+# *********************************************************************************************************************
 

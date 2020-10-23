@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+# EX: chownmod ubuntu:ubuntu 0644 /home/ubuntu/.bash_aliases
+chownmod() {
+  user="$1"; shift
+  mode="$1"; shift
+  sudo chown "$user" $@
+  sudo chmod "$mode" $@
+}
+
+apt_get_install() {
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $@
+}
+
+sudo_apt_get_install_y() {
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $@
+}
+

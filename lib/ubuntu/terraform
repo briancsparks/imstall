@@ -1,9 +1,27 @@
 #!/bin/bash -e
 
-script_dir="$( cd "$(dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd )"
+readlink_f() { which greadlink > /dev/null && greadlink -f $1 || readlink -f $1; }
+script_dir="$( cd "$(dirname "$( readlink_f "${BASH_SOURCE[0]}" )" )" && pwd )"
 
 errcho() { echo "$@" 1>&2; }
 die() { errcho "$@"; exit 1; }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Source utils
+. "${script_dir}/common/hashicorp"
+
+add_hashicorp_apt_repository
+
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends terraform
+
+exit 0
+# *********************************************************************************************************************
+
+
+
+
+
 
 URL="https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip"
 PATHNAME="/usr/local/bin/terraform"
