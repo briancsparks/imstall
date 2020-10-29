@@ -14,7 +14,7 @@ die() { errcho "$@"; exit 1; }
 add_hashicorp_apt_repository
 
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends vault
+sudo apt-get DEBIAN_FRONTEND=noninteractive install -y --no-install-recommends vault
 
 exit 0
 # *********************************************************************************************************************
@@ -23,7 +23,7 @@ exit 0
 
 
 URL="https://releases.hashicorp.com/vault/1.4.2/vault_1.4.2_linux_amd64.zip"
-PATHNAME="/usr/local/bin/vault"
+PATHNAME="/usr/bin/vault"
 
 [[ -f ${PATHNAME} ]] && die "already exists, stopping."
 

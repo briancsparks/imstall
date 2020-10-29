@@ -13,7 +13,7 @@ if ! [[ -f /etc/apt/sources.list.d/elastic-7.x.list ]]; then
   sudo apt-get update
 fi
 
-sudo apt-get install -y --no-install-recommends kibana
+sudo apt-get DEBIAN_FRONTEND=noninteractive install -y --no-install-recommends kibana
 
 # TODO: /etc/kibana/kibana.yml server.host 0.0.0.0
 perl -pi -e 's/^#?server.host:\s+.*$/server.host "0.0.0.0"/' /etc/kibana/kibana.yml

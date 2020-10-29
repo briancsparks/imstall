@@ -3,5 +3,5 @@
 # echo Installing Go
 
 # cd /tmp
-sudo apt-get install -y --no-install-recommends golang-go
+sudo apt-get DEBIAN_FRONTEND=noninteractive install -y --no-install-recommends golang-go
 
