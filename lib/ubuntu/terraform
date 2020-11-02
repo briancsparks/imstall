@@ -13,7 +13,7 @@ die() { errcho "$@"; exit 1; }
 add_hashicorp_apt_repository
 
 sudo apt-get update
-sudo apt-get DEBIAN_FRONTEND=noninteractive install -y --no-install-recommends terraform
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends terraform
 
 exit 0
 # *********************************************************************************************************************

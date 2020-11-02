@@ -2,7 +2,7 @@
 
 echo Installing Ansible
 
-sudo apt-get DEBIAN_FRONTEND=noninteractive install -y --no-install-recommends software-properties-common python-minimal virtualenv python-dev build-essential python-pip
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends software-properties-common python-minimal virtualenv python-dev build-essential python-pip
 pip install ansible
 
 # For ec2.py
