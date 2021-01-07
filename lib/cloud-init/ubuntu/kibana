@@ -1,0 +1,27 @@
+#!/bin/bash -e
+
+# echo Installing Kibana
+
+if ! [[ -f /etc/apt/sources.list.d/elastic-7.x.list ]]; then
+  # Get the key
+  curl -L https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-transport-https
+
+  # Cloud-Config
+  echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+
+  sudo apt-get update
+fi
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends kibana
+
+# TODO: /etc/kibana/kibana.yml server.host 0.0.0.0
+perl -pi -e 's/^#?server.host:\s+.*$/server.host "0.0.0.0"/' /etc/kibana/kibana.yml
+
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable kibana.service
+sudo /bin/systemctl start kibana.service
+
+# port 5601
+
+# vim: ft=bash:

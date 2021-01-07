@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+# Get the key
+curl -L https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-transport-https
+
+# Cloud-Config
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends elasticsearch
+
+# vim: ft=bash:

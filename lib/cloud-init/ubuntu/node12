@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# echo Installing Node.js v12
+
+# Get the key
+curl -L https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+
+# Cloud-Config
+sudo echo "deb https://deb.nodesource.com/node_12.x $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/node.list
+
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nodejs
+
+# TODO: make no sudo:
+# sudo chown -R $USER:$(id -gn $USER) /home/ubuntu/.config
+
+# vim: ft=bash:

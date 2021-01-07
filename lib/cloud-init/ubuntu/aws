@@ -1,0 +1,19 @@
+#!/bin/bash -ex
+
+# idempotence
+which aws && exit 0
+
+if ! which unzip; then
+  sudo apt-get install -y unzip
+fi
+
+cd /tmp/
+mkdir -p zz_packages
+cd zz_packages
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+[[ -d /tmp/zz_packages/aws/ ]] && rm -rf "/tmp/zz_packages/aws/"
+rm "/tmp/zz_packages/awscliv2.zip"

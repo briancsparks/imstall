@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+curl -sSL 'https://apt.corretto.aws/corretto.key' | sudo apt-key add -
+sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends java-1.8.0-amazon-corretto-jdk
+
+# TODO: Setup JAVA_HOME, et. al.

@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+echo Installing Ansible
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends software-properties-common python-minimal virtualenv python-dev build-essential python-pip
+pip install ansible
+
+# For ec2.py
+pip install boto boto3
+

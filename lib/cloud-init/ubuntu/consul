@@ -1,0 +1,419 @@
+#!/bin/bash -e
+
+# Not confirmed for use during cloud-init
+
+readlink_f() { which greadlink > /dev/null && greadlink -f $1 || readlink -f $1; }
+script_dir="$( cd "$(dirname "$( readlink_f "${BASH_SOURCE[0]}" )" )" && pwd )"
+
+errcho() { echo "$@" 1>&2; }
+die() { errcho "$@"; exit 1; }
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Source utils
+. "${script_dir}/common/hashicorp"
+
+add_hashicorp_apt_repository
+
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends consul
+
+exit 0
+# *********************************************************************************************************************
+
+
+# Notes
+
+# From https://learn.hashicorp.com/tutorials/consul/deployment-guide?in=consul/production-deploy
+#
+# Encrypted Gossip
+# Goes into the `encrypt` section of the consul config file on all consul agents.
+# $ consul keygen
+# 8rxFfQlb0smvknLgILyZkvRxv07p2wO4ev0UXDbRBss=
+
+# Encrypted RPC
+# $ consul tls ca create
+# ==> Saved consul-agent-ca.pem
+# ==> Saved consul-agent-ca-key.pem
+#
+# Saves into current dir
+
+# Individual server certs for Encrypted RPC
+# $ consul tls cert create -server -dc datacentername
+# ==> WARNING: Server Certificates grants authority to become a
+#     server and access all state in the cluster including root keys
+#     and all ACL tokens. Do not distribute them to production hosts
+#     that are not server nodes. Store them as securely as CA keys.
+# ==> Using consul-agent-ca.pem and consul-agent-ca-key.pem
+# ==> Saved datacentername-server-consul-0.pem
+# ==> Saved datacentername-server-consul-0-key.pem
+#
+# Saves into current dir
+
+# The same for individual client certs for Encrypted RPC
+# $ consul tls cert create -client -dc datacentername
+# ==> Using consul-agent-ca.pem and consul-agent-ca-key.pem
+# ==> Saved datacentername-client-consul-0.pem
+# ==> Saved datacentername-client-consul-0-key.pem
+#
+# Saves into current dir
+
+# On host
+# $ sudo mkdir -p /etc/consul.d
+# $ sudo touch /etc/consul.d/consul.hcl
+# $ sudo chown -R consul:consul /etc/consul.d
+# $ sudo chmod 640 /etc/consul.d/consul.hcl
+
+# Copy certs to hosts
+# $ scp consul-agent-ca.pem datacentername-server-consul-0.pem datacentername-server-consul-0-key.pem     user@server-ip:/etc/consul.d
+# $ scp consul-agent-ca.pem datacentername-client-consul-0.pem datacentername-client-consul-0-key.pem     user@server-ip:/etc/consul.d
+
+# Put this into /etc/consul.d/consul.hcl
+#
+# datacenter = "datacentername"
+# data_dir = "/opt/consul"
+# encrypt = "8rxFfQlb0smvknLgILyZkvRxv07p2wO4ev0UXDbRBss="
+# ca_file = "/etc/consul.d/consul-agent-ca.pem"
+# cert_file = "/etc/consul.d/datacentername-server-consul-0.pem"
+# key_file = "/etc/consul.d/datacentername-server-consul-0-key.pem"
+# verify_incoming = true
+# verify_outgoing = true
+# verify_server_hostname = true
+
+# Needed to make consul.hcl have these:
+#
+# bind_addr = "0.0.0.0"
+# client_addr = "0.0.0.0"
+# advertise_addr = "10.23.0.32"
+
+# Add:
+#
+# retry_join = ["10.1.2.3"]
+#
+# Note: Lookup how to do cloud auto-join https://www.consul.io/docs/agent/cloud-auto-join
+# retry_join = ["provider=aws tag_key=... tag_value=..."]
+
+# Add acl:
+#
+# acl = {
+#   enabled = true
+#   default_policy = "allow"
+#   enable_token_persistence = true
+# }
+
+# Add perf
+# performance {
+#   raft_multiplier = 1
+# }
+#
+# Note from docs: An integer multiplier used by Consul servers to scale key Raft timing parameters.
+# Setting this to a value of 1 will configure Raft to its highest-performance mode, equivalent to
+# the default timing of Consul prior to 0.7, and is recommended for production Consul servers.
+
+
+
+
+# Server hcl
+#
+# $ sudo touch /etc/consul.d/server.hcl
+# $ sudo chown --recursive consul:consul /etc/consul.d
+# $ sudo chmod 640 /etc/consul.d/server.hcl
+
+# Add
+#
+# server = true
+# bootstrap_expect = 3
+
+# And add:
+#
+# ui = true
+# #client_addr = "0.0.0.0"
+#
+# Note: should only ui on one server
+
+# Configure systemd
+#
+# $ sudo touch /usr/lib/systemd/system/consul.service
+#
+# With contents: (after installing with apt-get, only [Service] Type=notify was needed to be added)
+#
+# [Unit]
+# Description="HashiCorp Consul - A service mesh solution"
+# Documentation=https://www.consul.io/
+# Requires=network-online.target
+# After=network-online.target
+# ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+#
+# [Service]
+# Type=notify
+# User=consul
+# Group=consul
+# ExecStart=/usr/bin/consul agent -config-dir=/etc/consul.d/
+# ExecReload=/usr/bin/consul reload
+# ExecStop=/usr/bin/consul leave
+# KillMode=process
+# Restart=on-failure
+# LimitNOFILE=65536
+#
+# [Install]
+# WantedBy=multi-user.target
+#
+# Type=exec for dev or single consul
+
+# Start the service:
+#
+# $ consul validate /etc/consul.d/consul.hcl
+# $ sudo systemctl enable consul
+# Created symlink from /etc/systemd/system/multi-user.target.wants/consul.service to /usr/lib/systemd/system/consul.service.
+# $ sudo systemctl start consul
+# $ sudo systemctl status consul
+
+
+
+
+# Notice that since TLS encryption is enabled, you will now need to use the server
+# certificates to complete all other tasks.
+
+# Set env:
+#
+# $ export CONSUL_CACERT=/etc/consul.d/consul-agent-ca.pem
+# $ export CONSUL_CLIENT_CERT=/etc/consul.d/datacentername-server-consul-0.pem
+# $ export CONSUL_CLIENT_KEY=/etc/consul.d/datacentername-server-consul-0-key.pem
+#
+# See if its right
+# $ ll $CONSUL_CACERT
+# $ ll $CONSUL_CLIENT_CERT
+# $ ll $CONSUL_CLIENT_KEY
+
+# token
+#
+# $ consul acl bootstrap
+# AccessorID:       5cb197be-c957-c4fb-5118-fef540927adb
+# SecretID:         5a538973-8ece-aa0a-19f1-b37a6ec37290
+# Description:      Bootstrap Token (Global Management)
+# Local:            false
+# Create Time:      2020-10-29 02:53:45.556742365 +0000 UTC
+# Policies:
+#    00000000-0000-0000-0000-000000000001 - global-management
+
+# $ export CONSUL_HTTP_TOKEN="5a538973-8ece-aa0a-19f1-b37a6ec37290"
+# $ export CONSUL_MGMT_TOKEN="5a538973-8ece-aa0a-19f1-b37a6ec37290"
+
+# node-policy.hcl
+#
+# agent_prefix "" {
+#   policy = "write"
+# }
+# node_prefix "" {
+#   policy = "write"
+# }
+# service_prefix "" {
+#   policy = "read"
+# }
+# session_prefix "" {
+#   policy = "read"
+# }
+#
+
+# $ consul acl policy create -token=${CONSUL_MGMT_TOKEN} -name node-policy -rules @node-policy.hcl
+# ID:           1c6f6496-7c5f-c402-0aa2-697ff13a3405
+# Name:         node-policy
+# Description:
+# Datacenters:
+# Rules:
+# agent_prefix "" {
+#   policy = "write"
+# }
+# node_prefix "" {
+#   policy = "write"
+# }
+# service_prefix "" {
+#   policy = "read"
+# }
+# session_prefix "" {
+#   policy = "read"
+# }
+
+# $ consul acl token create -token=${CONSUL_MGMT_TOKEN} -description "node token" -policy-name node-policy
+# AccessorID:       49030c7d-fb18-016c-22dc-693caf0ce634
+# SecretID:         75bcd5de-7758-211e-0206-ea68c8594ed7
+# Description:      node token
+# Local:            false
+# Create Time:      2020-10-29 02:59:11.943095233 +0000 UTC
+# Policies:
+#    1c6f6496-7c5f-c402-0aa2-697ff13a3405 - node-policy
+
+# On all consul servers, add node token-token-secretid
+#
+# $ consul acl set-agent-token -token=${CONSUL_MGMT_TOKEN} agent 75bcd5de-7758-211e-0206-ea68c8594ed7
+# ACL token "agent" set successfully
+
+
+
+
+
+# Backing up
+#
+# $ consul snapshot save backup.snap
+# Saved and verified snapshot to index 77
+# $ consul snapshot inspect backup.snap
+# ID           2-77-1603940705492
+# Size         4566
+# Index        77
+# Term         2
+# Version      1
+#
+# Note: The backup will be saved locally in the directory where we ran the command.
+
+
+# Look at https://learn.hashicorp.com/tutorials/consul/production-checklist?in=consul/production-deploy
+
+
+
+
+
+
+
+#   1  ./bin/install-me
+#   2  ./bin/qn-run-script-from-s3 install-vault2
+#   3  vault operator unseal c96u8TI8kEEbfBqlZDGQnpH04rIlxynHZz+MPUJP3Isa
+#   4  export VAULT_ADDR="http://10.23.0.32:8200"
+#   5  vault operator unseal c96u8TI8kEEbfBqlZDGQnpH04rIlxynHZz+MPUJP3Isa
+#   6  vault operator unseal HUTnzKmh3CpNzky3x3eQrtIJkql4/CAK2DFl5DeMOG1v
+#   7  vault operator unseal RgjsQCt9/A2BxAKqCNKl3lz48AQAptgekQX+WgoaelXx
+#   8  vault status -format=json | jq .
+#   9  vault kv list secret/
+#   10  vault login s.sUPEcL9F9TorK4s0mRPL7Fbq
+#   11  vault kv list secret/
+#   12  alias
+#   13  vim /etc/vault.d/vault.*
+#   14  ll opt
+#   15  ll /opt
+#   16  tree /opt
+#   17  sudo tree /opt
+#   18  which vault
+#   19  sudo apt-get install -y consul
+#   20  sudo tree /opt
+#   21  ll /etc
+#   22  ll /etc/consul.d/
+#   23  tree $_
+#   24  vim /etc/consul.d/consul.hcl
+#   25  ps aux | egrep consul
+#   26  ll /etc/systemd/
+#   27  ll /etc/systemd/system
+#   28  cat /etc/systemd/system/vault.service
+#   29  /usr/bin/consul -config=/etc/consul.d/consul.hcl
+#   30  /usr/bin/consul
+#   31  vim /etc/consul.d/consul.hcl
+#   32  sudo vim /etc/consul.d/consul.hcl
+#   33  consul
+#   34  /usr/bin/consul -config=/etc/consul.d/consul.hcl
+#   35  /usr/bin/consul --config=/etc/consul.d/consul.hcl
+#   36  /usr/bin/consul /etc/consul.d/consul.hcl
+#   37  consul keygen
+#   38  consul tls ca create
+#   39  ll
+#   40  consul tls cert create -server -dc cdr0
+#   41  ll
+#   42  consul tls cert create -client -dc cdr0
+#   43  ll
+#   44  sudo mkdir -p /etc/consul.d
+#   45  sudo touch /etc/consul.d/consul.hcl
+#   46  tree /etc/consul.d/
+#   47  tree tree /etc/consul.d/
+#   48  tree /etc/consul.d/
+#   49  sudo tree /etc/consul.d/
+#   50  ll /etc
+#   51  sudo chown -R consul:consul /etc/consul.d
+#   52  sudo tree /etc/consul.d/
+#   53  sudo ls -l /etc/consul.d/
+#   54  sudo chmod 640 /etc/consul.d/consul.hcl
+#   55  sudo ls -l /etc/consul.d/
+#   56  ll
+#   57  sudo cp consul-agent-ca.pem /etc/consul.d/
+#   58  sudo cp cdr0-server-consul-0-key.pem /etc/consul.d/
+#   59  sudo cp cdr0-server-consul-0.pem /etc/consul.d/
+#   60  sudo tree /etc/consul.d/
+#   61  ll /etc/consul.d/
+#   62  sudo chmod 640 /etc/consul.d/*
+#   63  ll /etc/consul.d/
+#   64  sudo chown -R consul:consul /etc/consul.d
+#   65  ll /etc/consul.d/
+#   66  ll
+#   67  cat /etc/group
+#   68  ll /etc/consul.d/
+#   69  cat /etc/consul.d/consul.hcl
+#   70  vim /etc/consul.d/consul.hcl
+#   71  sudo vim /etc/consul.d/consul.hcl
+#   72  cd /etc/consul.d/
+#   73  ll
+#   74  touch server.hcl
+#   75  ll
+#   76  touch server.hcl
+#   77  sudo touch server.hcl
+#   78  ll
+#   79  sudo chown consul:consul server.hcl
+#   80  sudo chmod 640 server.hcl
+#   81  ll
+#   82  sudo vim -p server.hcl consul.hcl
+#   83  sudo touch /usr/lib/systemd/system/consul.service
+#   84  sudo vim -p /usr/lib/systemd/system/consul.service
+#   85  consul validate /etc/consul.d/consul.hcl
+#   86  sudo vim -p server.hcl consul.hcl
+#   87  consul validate /etc/consul.d/consul.hcl
+#   88  sudo vim -p server.hcl consul.hcl
+#   89  consul validate /etc/consul.d/consul.hcl
+#   90  sudo vim -p server.hcl consul.hcl
+#   91  fg
+#   92  sudo vim -p server.hcl consul.hcl
+#   93  consul validate /etc/consul.d/consul.hcl
+#   94  sudo vim -p server.hcl consul.hcl
+#   95  consul validate /etc/consul.d/consul.hcl
+#   96  sudo vim -p server.hcl consul.hcl
+#   97  consul validate /etc/consul.d/consul.hcl
+#   98  sudo vim -p server.hcl consul.hcl
+#   99  consul validate /etc/consul.d/consul.hcl
+# 100  consul validate /etc/consul.d/s
+# 101  consul validate /etc/consul.d/server.hcl
+# 102  sudo vim -p server.hcl consul.hcl
+# 103  consul validate /etc/consul.d/server.hcl
+# 104  sudo vim -p server.hcl consul.hcl
+# 105  consul validate /etc/consul.d/server.hcl
+# 106  consul validate /etc/consul.d/c
+# 107  consul validate /etc/consul.d/consul
+# 108  consul validate /etc/consul.d/consul.hcl
+# 109  sudo vim -p server.hcl consul.hcl
+# 110  sudo systemctl enable consul
+# 111  sudo systemctl start consul
+# 112  sudo systemctl status consul
+# 113  sudo systemctl stop consul
+# 114  sudo systemctl status consul
+# 115  sudo vim -p server.hcl consul.hcl
+# 116  sudo systemctl start consul
+# 117  sudo vim -p server.hcl consul.hcl
+# 118  sudo systemctl status consul
+# 119  ps aux | egrep consul
+# 120  ll
+# 121  export CONSUL_CACERT=/etc/consul.d/consul-agent-ca.pem
+# 122  export CONSUL_CLIENT_CERT=/etc/consul.d/cdr0-server-consul-0.pem
+# 123  export CONSUL_CLIENT_KEY=/etc/consul.d/cdr0-server-consul-0-key.pem
+# 124  ll $CONSUL_CACERT
+# 125  ll $CONSUL_CLIENT_CERT
+# 126  ll $CONSUL_CLIENT_KEY
+# 127  consul acl bootstrap
+# 128  export CONSUL_HTTP_TOKEN="5a538973-8ece-aa0a-19f1-b37a6ec37290"
+# 129  export CONSUL_MGMT_TOKEN="5a538973-8ece-aa0a-19f1-b37a6ec37290"
+# 130  cd
+# 131  cat - > node-policy.hcl
+# 132  consul acl policy create -token=${CONSUL_MGMT_TOKEN} -name node-policy -rules @node-policy.hcl
+# 133  consul acl token create -token=${CONSUL_MGMT_TOKEN} -description "node token" -policy-name node-policy
+# 134  consul acl set-agent-token -token=${CONSUL_MGMT_TOKEN} agent 75bcd5de-7758-211e-0206-ea68c8594ed7
+# 135  consul snapshot save backup.snap
+# 136  ll
+# 137  consul snapshot inspect backup.snap
+# 138  history
+
+
+
+
+
