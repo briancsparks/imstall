@@ -1,6 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
-ssh-keygen -F github.com || ssh-keyscan github.com >> "${HOME}/.ssh/known_hosts"
+## Do not have ${HOME} yet, so cannot do this
+#ssh-keygen -F github.com || ssh-keyscan github.com >> "${HOME}/.ssh/known_hosts"
+
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
 
 
