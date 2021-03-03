@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+# Required for gosl
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    gcc \
+    gfortran \
+    libopenmpi-dev \
+    liblapacke-dev \
+    libopenblas-dev \
+    libmetis-dev \
+    libsuitesparse-dev \
+    libmumps-dev \
+    libfftw3-dev \
+    libfftw3-mpi-dev
+
+
+# TODO?:
+#
+#* go+ (https://github.com/goplus/gop)
