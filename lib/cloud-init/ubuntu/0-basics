@@ -1,6 +1,9 @@
 #!/bin/bash -ex
 
 echo "===== 0-basics ===== start"
+# Stall to let some things catch up
+sleep 8
+
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl tree zip unzip silversearcher-ag apt-transport-https gnupg2 htop
 echo "===== 0-basics ===== end"

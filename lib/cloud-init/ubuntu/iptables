@@ -122,4 +122,4 @@ ip6tables-save | sudo tee /etc/iptables/rules.v6
 #echo "/home/ubuntu/bin/test-bastion" >> "/home/ubuntu/.bashrc"
 
 
-echo "===== iptables ===== start"
+echo "===== iptables ===== end"
