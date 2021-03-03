@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo "===== $0 ===== start"
+
 echo Installing Ansible
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends software-properties-common python-minimal virtualenv python-dev build-essential python-pip
@@ -8,3 +10,4 @@ pip install ansible
 # For ec2.py
 pip install boto boto3
 
+echo "===== $0 ===== end"

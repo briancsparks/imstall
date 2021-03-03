@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+echo "===== node12 ===== start"
+
 # echo Installing Node.js v12
 
 # Get the key
@@ -13,5 +15,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends n
 
 # TODO: make no sudo:
 # sudo chown -R $USER:$(id -gn $USER) /home/ubuntu/.config
+echo "===== node12 ===== end"
 
 # vim: ft=bash:

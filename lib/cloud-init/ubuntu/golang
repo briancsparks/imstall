@@ -1,6 +1,10 @@
 #!/bin/bash -e
 
+echo "===== $0 ===== start"
+
 # echo Installing Go
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends golang-go
+
+echo "===== $0 ===== end"
 

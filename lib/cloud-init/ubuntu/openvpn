@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+echo "===== openvpn ===== start"
+
+
 # TODO: configure this
 STACKNAME="stackname"
 
@@ -215,6 +218,7 @@ sudo chown -R ubuntu:ubuntu openvpn
 #
 
 
+echo "===== openvpn ===== end"
 
 
 

@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+echo "===== $0 ===== start"
+
 readlink_f() { which greadlink > /dev/null && greadlink -f $1 || readlink -f $1; }
 script_dir="$( cd "$(dirname "$( readlink_f "${BASH_SOURCE[0]}" )" )" && pwd )"
 
@@ -191,3 +193,4 @@ Commercial support is available at
 EOF
 
 
+echo "===== $0 ===== end"

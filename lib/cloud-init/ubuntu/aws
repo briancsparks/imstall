@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+echo "===== $0 ===== start"
+
 # idempotence
 which aws && exit 0
 
@@ -17,3 +19,5 @@ sudo ./aws/install
 
 [[ -d /tmp/zz_packages/aws/ ]] && rm -rf "/tmp/zz_packages/aws/"
 rm "/tmp/zz_packages/awscliv2.zip"
+
+echo "===== $0 ===== end"

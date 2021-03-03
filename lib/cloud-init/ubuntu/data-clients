@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo "===== $0 ===== start"
+
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 656408E390CFB1F5
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
 
@@ -11,4 +13,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     redis-tools
 
 [[ "$(lsb_release -cs)" == "xenial" ]] && apt-get install -y --no-install-recommends libcurl3
+
+echo "===== $0 ===== end"
 

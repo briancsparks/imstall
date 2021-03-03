@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo "===== $0 ===== start"
+
 # Required for gosl
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -18,3 +20,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 # TODO?:
 #
 #* go+ (https://github.com/goplus/gop)
+
+echo "===== $0 ===== end"
+

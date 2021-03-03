@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo "===== $0 ===== start"
+
 # Not confirmed for use during cloud-init
 
 readlink_f() { which greadlink > /dev/null && greadlink -f $1 || readlink -f $1; }
@@ -413,6 +415,7 @@ exit 0
 # 137  consul snapshot inspect backup.snap
 # 138  history
 
+echo "===== $0 ===== end"
 
 
 
