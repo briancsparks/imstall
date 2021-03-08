@@ -23,6 +23,36 @@ echo ""
 echo "---------------------------------------------------"
 echo ""
 
+echo "cloud-init /run/cloud-init"
+ls -l /run/cloud-init
+
+echo "cloud-init /var/lib/cloud"
+ls -l /var/lib/cloud
+
+echo "cloud-init /run/cloud-init/instance-data.json"
+if [ -f /run/cloud-init/instance-data.json ]; then
+  cat /run/cloud-init/instance-data.json
+fi
+
+echo "cloud-init /run/cloud-init/instance-data-sensitive.json"
+if [ -f /run/cloud-init/instance-data-sensitive.json ]; then
+  cat /run/cloud-init/instance-data-sensitive.json
+fi
+
+echo "cloud-init /var/lib/cloud/instance/user-data.txt"
+if [ -f /var/lib/cloud/instance/user-data.txt ]; then
+  cat /var/lib/cloud/instance/user-data.txt
+fi
+
+echo "cloud-init /var/lib/cloud/instance/vendor-data.txt"
+if [ -f /var/lib/cloud/instance/vendor-data.txt ]; then
+  cat /var/lib/cloud/instance/vendor-data.txt
+fi
+
+echo ""
+echo "---------------------------------------------------"
+echo ""
+
 echo "ENV"
 env | sort
 
